@@ -3,9 +3,21 @@
 
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'dark'
+  
+  // JekyllがMermaidコードブロックを<pre><code>に変換してしまうので、
+  // それを<pre class="mermaid">に変換してからMermaidを初期化する
+  document.querySelectorAll('pre code.language-mermaid, pre code').forEach(function(block) {
+    const text = block.textContent;
+    if (text.trim().startsWith('flowchart') || text.trim().startsWith('graph') || 
+        text.trim().startsWith('sequenceDiagram') || text.trim().startsWith('classDiagram') ||
+        text.trim().startsWith('stateDiagram') || text.trim().startsWith('gantt') ||
+        text.trim().startsWith('pie') || text.trim().startsWith('erDiagram')) {
+      const pre = block.parentElement;
+      pre.classList.add('mermaid');
+      pre.textContent = text;
+    }
   });
+
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
 </script>
 <!-- end custom head snippets -->
