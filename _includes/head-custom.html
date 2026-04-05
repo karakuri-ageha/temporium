@@ -1,23 +1,48 @@
 <!-- start custom head snippets -->
 {% include head-custom-google-analytics.html %}
 
+<style>
+  /* Mermaid図を横スクロール可能にして縮小を防ぐ */
+  .mermaid {
+    overflow-x: auto;
+    background: #1a1a2e;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .mermaid svg {
+    min-width: 800px;
+    font-size: 16px !important;
+  }
+</style>
+
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   
-  // JekyllがMermaidコードブロックを<pre><code>に変換してしまうので、
-  // それを<pre class="mermaid">に変換してからMermaidを初期化する
-  document.querySelectorAll('pre code.language-mermaid, pre code').forEach(function(block) {
-    const text = block.textContent;
-    if (text.trim().startsWith('flowchart') || text.trim().startsWith('graph') || 
-        text.trim().startsWith('sequenceDiagram') || text.trim().startsWith('classDiagram') ||
-        text.trim().startsWith('stateDiagram') || text.trim().startsWith('gantt') ||
-        text.trim().startsWith('pie') || text.trim().startsWith('erDiagram')) {
-      const pre = block.parentElement;
-      pre.classList.add('mermaid');
-      pre.textContent = text;
-    }
+  document.querySelectorAll('pre code.language-mermaid').forEach(function(code) {
+    const pre = code.parentElement;
+    const div = document.createElement('div');
+    div.classList.add('mermaid');
+    div.textContent = code.textContent;
+    pre.parentNode.replaceChild(div, pre);
   });
 
-  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    flowchart: {
+      nodeSpacing: 30,
+      rankSpacing: 50,
+      curve: 'basis',
+      padding: 15
+    },
+    themeVariables: {
+      fontSize: '16px',
+      nodeBorder: '#4a9eff',
+      mainBkg: '#2d2d44',
+      nodeTextColor: '#ffffff',
+      edgeLabelBackground: '#1a1a2e',
+      lineColor: '#4a9eff'
+    }
+  });
 </script>
 <!-- end custom head snippets -->
